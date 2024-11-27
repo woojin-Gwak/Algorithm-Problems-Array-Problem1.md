@@ -1,0 +1,124 @@
+# 백준 [2630번: 색종이 만들기](https://www.acmicpc.net/problem/2630)
+
+### 문제 설명
+
+- 주어진 2차원 배열에서 흰색(0)과 파란색(1)으로 채워진 색종이가 있습니다.
+- 이 색종이를 가능한 최소한의 조각으로 잘라내며, 각 조각이 동일한 색상(모두 흰색 또는 모두 파란색)인 경우에만 하나의 조각으로 카운트합니다.
+- 최종적으로 흰색과 파란색 조각의 개수를 출력합니다.
+
+### 접근 방법
+
+1. **재귀적 분할**:
+    - 색종이 전체가 같은 색인지 확인합니다.
+    - 같은 색이 아니라면 색종이를 4개의 사각형으로 나눕니다(각 사각형의 크기는 절반).
+    - 각 사각형에 대해 동일한 작업을 반복합니다.
+2. **베이스 케이스**:
+    - 1x1 크기의 색종이는 그 자체로 하나의 색으로 판단합니다.
+    - 같은 색이면 그 색에 대한 카운트를 증가시킵니다.
+3. **카운트 유지**:
+    - 흰색의 개수와 파란색의 개수를 각각 카운트하여 마지막에 출력합니다.
+
+### 코드 예시
+
+```python
+python
+코드 복사
+def count_paper(x, y, size):
+    color = graph[y][x]  # y는 행, x는 열
+
+    # 색종이 전체가 같은 색인지 확인
+    for i in range(y, y + size):
+        for j in range(x, x + size):
+            if graph[i][j] != color:
+                # 같은 색이 아니라면 4분할하여 재귀 호출
+                new_size = size // 2
+                white = 0
+                blue = 0
+                white += count_paper(x, y, new_size)          # 왼쪽 위
+                blue += count_paper(x + new_size, y, new_size)  # 오른쪽 위
+                white += count_paper(x, y + new_size, new_size)  # 왼쪽 아래
+                blue += count_paper(x + new_size, y + new_size, new_size)  # 오른쪽 아래
+                return white, blue
+
+    # 모두 같은 색일 경우 카운트 증가
+    if color == 0:
+        return 1, 0  # 흰색 카운트 1 증가
+    else:
+        return 0, 1  # 파란색 카운트 1 증가
+
+import sys
+input = sys.stdin.readline
+
+n = int(input())
+graph = [list(map(int, input().split())) for _ in range(n)]
+
+white_count, blue_count = count_paper(0, 0, n)
+print(white_count)
+print(blue_count)
+
+```
+
+### 코드 설명
+
+- `count_paper` 함수는 `(x, y)` 좌표에서 주어진 `size`의 색종이를 검사합니다.
+- 모든 요소가 동일한 색상인 경우 해당 색상에 대한 카운트를 반환합니다.
+- 색상이 다르면 색종이를 4개의 사각형으로 나누어 재귀적으로 호출합니다.
+- 최종적으로 흰색과 파란색의 개수를 출력합니다.
+
+### 시간 복잡도
+
+- 최악의 경우, 각 분할이 로그 깊이까지 진행될 수 있으므로, 시간 복잡도는 O(n2)입니다.
+    
+    O(n2)O(n^2)
+    
+
+### 추가 팁
+
+- 문제 해결을 위해 **재귀적 접근**과 **분할 정복** 개념을 이해하는 것이 중요합니다.
+- 2차원 배열에서 재귀 호출을 사용하여 색종이를 분할하는 방식을 익히는 것이 도움이 됩니다.
+
+global 선언시 코드
+
+```python
+def count_paper(x, y, size):
+    global white_count, blue_count
+    color = graph[y][x]  # y는 행, x는 열
+
+    # 색종이 전체가 같은 색인지 확인
+    for i in range(y, y + size):
+        for j in range(x, x + size):
+            if graph[i][j] != color:
+                # 같은 색이 아니라면 4분할하여 재귀 호출
+                new_size = size // 2
+                count_paper(x, y, new_size)          # 왼쪽 위
+                count_paper(x + new_size, y, new_size)  # 오른쪽 위
+                count_paper(x, y + new_size, new_size)  # 왼쪽 아래
+                count_paper(x + new_size, y + new_size, new_size)  # 오른쪽 아래
+                return
+    
+    # 모두 같은 색일 경우 카운트 증가
+    if color == 0:
+        white_count += 1
+    else:
+        blue_count += 1
+
+import sys
+input = sys.stdin.readline
+
+n = int(input())
+graph = [list(map(int, input().split())) for _ in range(n)]
+
+white_count = 0
+blue_count = 0
+
+count_paper(0, 0, n)
+print(white_count)
+print(blue_count)
+
+```
+
+[**백준 1074번: (Z)** ](https://www.notion.so/1074-Z-127900cfb74d80a2aea1fde6a5399100?pvs=21)
+
+[**백준 1991번: 트리 순회 (전위, 중위, 후위 순회) 문제 정리**](https://www.notion.so/1991-134900cfb74d8056aaacce4f61205531?pvs=21)
+
+[백준 14501번: 퇴사](https://www.notion.so/14501-136900cfb74d80488e67f021089761c6?pvs=21)
